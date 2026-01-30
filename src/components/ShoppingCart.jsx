@@ -1,8 +1,18 @@
 import {ShoppingCartIcon, XIcon} from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {useCart} from '../context/cartContext';
+import CartItem from "./CartItem";
 
 function ShoppingCart() {
     const [isOpen, setIsOpen] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+
+    const {allItems} = useCart();
+
+    useEffect(() => {
+        const inCartItems = allItems.filter((item) => item.inCart);
+        setCartItems(inCartItems?.reverse());
+    },[allItems]);
 
   return (
 <>
@@ -18,6 +28,11 @@ function ShoppingCart() {
         <span className="w-6 h-6 bg-pink-400 absolute -bottom-4 -left-2 grid place-items-center border border-gray-300 rounded-full text-sm text-white">1</span>
     </button>
     <div className="h-screen flex flex-col gap-y-3 overflow-y-scroll px-5 pb-24 pt-20">
+        {cartItems?.map((item) => {
+            return (
+                <CartItem key={item.id} item={item} fromCart={true}/>
+            )
+        })}
     </div>
     <div className="w-full h-20 bg-white absolute bottom-0 left-0 z-10 grid place-items-center border rounded-lg">
         <h1 className="text-xl text-gray-600">Total: $155</h1>
